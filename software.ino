@@ -1,21 +1,21 @@
 
 #include <LiquidCrystal.h>
-LiquidCrystal lcd(3, 4, 5, 6, 7, 8);     //definire pini pe care este conectat LCD
+LiquidCrystal lcd(3, 4, 5, 6, 7, 8);     
 
-const int input_digital = 2;  //pinul folosit pentru masurarea frecventei
-unsigned long timp_afisare;        //contor pentru perioada de afisare
-unsigned long timp_masurare;     //contor pentru perioada de masurare
-unsigned long impulsuri;      //numarul masurat de impulsuri primite
-double frecventa;         //valoarea calculata pentru frecventa
+const int input_digital = 2;  
+unsigned long timp_afisare;        
+unsigned long timp_masurare;     
+unsigned long impulsuri;      
+double frecventa;         
 float perioada;
-int unitate_masura = 1;     //memoreaza unitatea de masura folosita Hz/kHz/MHz
+int unitate_masura = 1;     
 
-void setup()     //se fac configurari o singura data in functia setup()
+void setup()     
 {
-  lcd.begin(16, 2);          //initilizare LCD cu 2x16 caractere
-  lcd.setCursor(0, 0);            //afisez pe primul rand al LCD
-  lcd.print("Frecventmetru");          //mesaj initial pe LCD
-  lcd.setCursor(0, 1);            //afisez pe al doilea rand al LCD
+  lcd.begin(16, 2);          
+  lcd.setCursor(0, 0);            
+  lcd.print("Frecventmetru");         
+  lcd.setCursor(0, 1);            
   lcd.print("Proiect 2 ETTI");
 
   Serial.begin(9600);
@@ -23,36 +23,36 @@ void setup()     //se fac configurari o singura data in functia setup()
   Serial.println("Proiect 2 ETTI");
 }
 
-void loop()                     // bucla infinita while(1)
+void loop()                     
 {
-  perioada = 2 * pulseIn(input_digital, HIGH); //T= 2*Ton, pentru ca factorul de umplere este 50%
+  perioada = 2 * pulseIn(input_digital, HIGH); 
 
-  if (millis() - timp_afisare > 500) {   //la fiecare 0.5 secunde
+  if (millis() - timp_afisare > 500) {   
     Serial.print("Frecventa:");
     Serial.print(frecventa);
-    if (unitate_masura == 1)Serial.println("Hz");    //afiseaza unitatea de masura corespunzatoare
+    if (unitate_masura == 1)Serial.println("Hz");    
     else  if (unitate_masura == 2)Serial.println("kHz");
 
     lcd.clear();
-    lcd.setCursor(0, 0);     //afisez pe primul rand al LCD
+    lcd.setCursor(0, 0);     
     lcd.print("Frecventmetru");
-    lcd.setCursor(0, 1);     //afisez pe al doilea rand al LCD
+    lcd.setCursor(0, 1);     
     lcd.print("F:");
-    lcd.print(frecventa);      //afiseaza valoarea frecventei
-    if (unitate_masura == 1)lcd.print("Hz");    //afiseaza unitatea de masura corespunzatoare
+    lcd.print(frecventa);      
+    if (unitate_masura == 1)lcd.print("Hz");    
     else  if (unitate_masura == 2)lcd.print("kHz");
-    timp_afisare = millis(); //tin minte momentul de timp cand a avut loc afisarea
-  }  //if timp afisare
+    timp_afisare = millis(); 
+  }  
 
-  if (micros() - timp_masurare >= 100000) {   //la fiecare 0.1 secunde
-    if (perioada)frecventa = 1000000 / perioada;   //microsecunde =>Hz
+  if (micros() - timp_masurare >= 100000) {   
+    if (perioada)frecventa = 1000000 / perioada;   
     else frecventa = 0;
 
-    if (frecventa > 1000) {     //transforma in kHz
+    if (frecventa > 1000) {     
       frecventa = frecventa / 1000;
-      unitate_masura = 2;          //memoreaza unitatea de masura kHz
+      unitate_masura = 2;          
     }
-    else unitate_masura = 1;   //altfel lasa unitatea de masura Hz
+    else unitate_masura = 1;  
     timp_masurare = micros();  //tine minte momentul de timp cand s-a facut masuratoare de frecventa
   }  //if timp
 
